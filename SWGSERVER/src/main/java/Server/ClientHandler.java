@@ -8,6 +8,7 @@ package Server;
  *
  * @author adsd3
  */
+
 import java.io.*;
 import java.net.Socket;
 
@@ -16,12 +17,14 @@ public class ClientHandler extends Thread {
     private BufferedReader in;
     private BufferedWriter out;
     private SessionManager sessionManager;
+    private LoginProcessor loginProcessor;
     private String userId = null;
     private boolean isWaiting = false;
 
     public ClientHandler(Socket socket, SessionManager sessionManager) {
         this.socket = socket;
         this.sessionManager = sessionManager;
+        this.loginProcessor = new LoginProcessor(sessionManager);
 
         try {
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -56,7 +59,7 @@ public class ClientHandler extends Thread {
                     String password = parts[1].trim();
                     String role = parts[2].trim();
 
-                    boolean valid = validateLogin(userId, password, role);
+                    boolean valid = loginProcessor.validateLogin(userId, password, role);
                     if (!valid) {
                         out.write("FAIL");
                         out.newLine();
@@ -64,7 +67,6 @@ public class ClientHandler extends Thread {
                         continue;
                     }
 
-                    // ✅ 관리자라면 제한 없이 즉시 로그인 허용
                     if (role.equals("admin")) {
                         out.write("LOGIN_SUCCESS");
                         out.newLine();
@@ -73,9 +75,7 @@ public class ClientHandler extends Thread {
                         continue;
                     }
 
-                    // ✅ 사용자 로그인 처리
-                    SessionManager.PendingClient pending = new SessionManager.PendingClient(socket, userId, out);
-                    SessionManager.LoginDecision result = sessionManager.tryLogin(userId, pending);
+                    SessionManager.LoginDecision result = loginProcessor.tryUserLogin(userId, socket, out);
 
                     if (result == SessionManager.LoginDecision.OK) {
                         out.write("LOGIN_SUCCESS");
@@ -93,34 +93,28 @@ public class ClientHandler extends Thread {
                         out.newLine();
                         out.flush();
                     }
+
                 } else if (msg.startsWith("LOGOUT:")) {
                     String logoutUser = msg.substring(7).trim();
                     System.out.println("📤 로그아웃: " + logoutUser);
-                    sessionManager.logout(logoutUser);
+                    loginProcessor.logout(logoutUser);
                     break;
                 }
             }
         } catch (IOException | InterruptedException e) {
             System.out.println("❌ 연결 오류: " + e.getMessage());
-            if (userId != null) sessionManager.logout(userId);
-        }
-    }
-
-    private boolean validateLogin(String userId, String password, String role) {
-        String fileName = role.equals("admin") ? "src/main/resources/ADMIN_LOGIN.txt" : "src/main/resources/USER_LOGIN.txt";
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] tokens = line.split(",");
-                if (tokens.length >= 2 &&
-                        tokens[0].trim().equals(userId) &&
-                        tokens[1].trim().equals(password)) {
-                    return true;
+        } finally {
+            try {
+                if (userId != null) {
+                    loginProcessor.logout(userId);
+                    System.out.println("🧹 세션 정리됨: " + userId);
                 }
+                if (socket != null && !socket.isClosed()) {
+                    socket.close();
+                }
+            } catch (IOException e) {
+                System.out.println("❌ 종료 정리 실패: " + e.getMessage());
             }
-        } catch (IOException e) {
-            System.err.println("❌ 로그인 파일 오류: " + e.getMessage());
         }
-        return false;
     }
 }
