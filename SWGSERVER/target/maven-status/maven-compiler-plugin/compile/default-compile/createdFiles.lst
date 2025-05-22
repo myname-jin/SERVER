@@ -1,0 +1,16 @@
+Server\SessionManager.class
+ServerClient\LogoutUtil$1.class
+Server\ClientHandler.class
+Server\SessionManager$PendingClient.class
+ServerClient\ClientHandler.class
+com\mycompany\swgserver\SWGSERVER.class
+ServerClient\SessionManager$Pending.class
+Server\SessionManager$LoginDecision.class
+ServerClient\SessionManager.class
+ServerClient\CredentialStore.class
+ServerClient\ClientHandler$1.class
+Server\ServerMain.class
+Server\ServerView.class
+ServerClient\LogoutUtil.class
+ServerClient\ServerMain.class
+ServerClient\SessionManager$LoginDecision.class
