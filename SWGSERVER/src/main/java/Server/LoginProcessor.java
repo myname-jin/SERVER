@@ -32,7 +32,7 @@ public class LoginProcessor {
                 }
             }
         } catch (IOException e) {
-            System.err.println("❌ 로그인 파일 오류: " + e.getMessage());
+            System.err.println("로그인 파일 오류: " + e.getMessage());
         }
         return false;
     }

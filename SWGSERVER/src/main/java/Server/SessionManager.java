@@ -62,9 +62,9 @@ public class SessionManager {
             next.out.newLine();
             next.out.flush();
             active.add(next.userId);
-            System.out.println("🟢 대기자 자동 로그인: " + next.userId);
+            System.out.println("대기자 자동 로그인: " + next.userId);
         } catch (Exception e) {
-            System.err.println("❌ 대기자 로그인 실패: " + e.getMessage());
+            System.err.println("대기자 로그인 실패: " + e.getMessage());
         }
     }
 }

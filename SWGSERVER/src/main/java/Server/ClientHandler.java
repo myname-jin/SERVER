@@ -71,7 +71,7 @@ public class ClientHandler extends Thread {
                         out.write("LOGIN_SUCCESS");
                         out.newLine();
                         out.flush();
-                        System.out.println("👑 관리자 " + userId + " 접속 허용됨");
+                        System.out.println("관리자 " + userId + " 접속 허용됨");
                         continue;
                     }
 
@@ -81,12 +81,12 @@ public class ClientHandler extends Thread {
                         out.write("LOGIN_SUCCESS");
                         out.newLine();
                         out.flush();
-                        System.out.println("✅ 사용자 " + userId + " 로그인됨");
+                        System.out.println("사용자 " + userId + " 로그인됨");
                     } else if (result == SessionManager.LoginDecision.WAIT) {
                         out.write("WAIT");
                         out.newLine();
                         out.flush();
-                        System.out.println("⌛ 사용자 " + userId + " 대기 중");
+                        System.out.println("사용자 " + userId + " 대기 중");
                         isWaiting = true;
                     } else {
                         out.write("FAIL");
@@ -96,24 +96,23 @@ public class ClientHandler extends Thread {
 
                 } else if (msg.startsWith("LOGOUT:")) {
                     String logoutUser = msg.substring(7).trim();
-                    System.out.println("📤 로그아웃: " + logoutUser);
+                    System.out.println(" 로그아웃: " + logoutUser);
                     loginProcessor.logout(logoutUser);
                     break;
                 }
             }
         } catch (IOException | InterruptedException e) {
-            System.out.println("❌ 연결 오류: " + e.getMessage());
+            System.out.println("연결 오류: " + e.getMessage());
         } finally {
             try {
                 if (userId != null) {
                     loginProcessor.logout(userId);
-                    System.out.println("🧹 세션 정리됨: " + userId);
                 }
                 if (socket != null && !socket.isClosed()) {
                     socket.close();
                 }
             } catch (IOException e) {
-                System.out.println("❌ 종료 정리 실패: " + e.getMessage());
+                System.out.println("종료 정리 실패: " + e.getMessage());
             }
         }
     }
