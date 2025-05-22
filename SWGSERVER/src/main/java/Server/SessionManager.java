@@ -10,13 +10,12 @@ package Server;
  * @author adsd3
  */
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
 
 public class SessionManager {
     private final int maxUsers;
-    private final Set<String> active = new HashSet<>();
+    private final Set<String> active = new HashSet<>();  // 사용자만 저장
     private final Queue<PendingClient> queue = new ArrayDeque<>();
 
     public SessionManager(int maxUsers) {
@@ -41,7 +40,7 @@ public class SessionManager {
         if (active.contains(userId)) return LoginDecision.FAIL_DUP;
 
         if (active.size() < maxUsers) {
-            active.add(userId);
+            active.add(userId); // 사용자만 저장
             return LoginDecision.OK;
         } else {
             queue.offer(pending);
@@ -50,7 +49,7 @@ public class SessionManager {
     }
 
     public synchronized void logout(String userId) {
-        active.remove(userId);
+        active.remove(userId);  // 사용자만 제거
         nextClient();
     }
 
@@ -64,7 +63,7 @@ public class SessionManager {
             next.out.flush();
             active.add(next.userId);
             System.out.println("🟢 대기자 자동 로그인: " + next.userId);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("❌ 대기자 로그인 실패: " + e.getMessage());
         }
     }

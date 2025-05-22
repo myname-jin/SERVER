@@ -64,6 +64,16 @@ public class ClientHandler extends Thread {
                         continue;
                     }
 
+                    // ✅ 관리자라면 제한 없이 즉시 로그인 허용
+                    if (role.equals("admin")) {
+                        out.write("LOGIN_SUCCESS");
+                        out.newLine();
+                        out.flush();
+                        System.out.println("👑 관리자 " + userId + " 접속 허용됨");
+                        continue;
+                    }
+
+                    // ✅ 사용자 로그인 처리
                     SessionManager.PendingClient pending = new SessionManager.PendingClient(socket, userId, out);
                     SessionManager.LoginDecision result = sessionManager.tryLogin(userId, pending);
 
@@ -71,19 +81,18 @@ public class ClientHandler extends Thread {
                         out.write("LOGIN_SUCCESS");
                         out.newLine();
                         out.flush();
-                        System.out.println("✅ " + userId + " 로그인됨");
+                        System.out.println("✅ 사용자 " + userId + " 로그인됨");
                     } else if (result == SessionManager.LoginDecision.WAIT) {
                         out.write("WAIT");
                         out.newLine();
                         out.flush();
-                        System.out.println("⌛ " + userId + " 대기 중");
+                        System.out.println("⌛ 사용자 " + userId + " 대기 중");
                         isWaiting = true;
                     } else {
                         out.write("FAIL");
                         out.newLine();
                         out.flush();
                     }
-
                 } else if (msg.startsWith("LOGOUT:")) {
                     String logoutUser = msg.substring(7).trim();
                     System.out.println("📤 로그아웃: " + logoutUser);
