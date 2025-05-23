@@ -5,4 +5,5 @@ Server\SessionManager$PendingClient.class
 Server\ServerMain.class
 Server\ServerView.class
 com\mycompany\swgserver\SWGSERVER.class
+Server\RegisterHandler.class
 Server\SessionManager$LoginDecision.class
