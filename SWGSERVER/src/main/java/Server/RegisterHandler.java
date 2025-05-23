@@ -8,17 +8,22 @@ package Server;
  *
  * @author adsd3
  */
+
 import java.io.*;
 
 public class RegisterHandler {
     public static void processRegister(String msg, BufferedWriter out) throws IOException {
         String[] parts = msg.substring(9).split(",");
-        if (parts.length == 2) {
+        if (parts.length == 3) {
             String newId = parts[0].trim();
             String newPw = parts[1].trim();
+            String role = parts[2].trim().toLowerCase();
 
-            try (BufferedWriter writer = new BufferedWriter(
-                    new FileWriter("src/main/resources/USER_LOGIN.txt", true))) {
+            String filename = role.equals("admin") ?
+                    "src/main/resources/ADMIN_LOGIN.txt" :
+                    "src/main/resources/USER_LOGIN.txt";
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
                 writer.write(newId + "," + newPw);
                 writer.newLine();
             }
