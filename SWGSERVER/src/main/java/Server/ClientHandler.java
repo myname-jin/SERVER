@@ -9,6 +9,7 @@ package Server;
  * @author adsd3
  */
 
+import Client.RegisterHandler;
 import java.io.*;
 import java.net.Socket;
 

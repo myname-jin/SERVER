@@ -2,8 +2,9 @@ Server\SessionManager.class
 Server\LoginProcessor.class
 Server\ClientHandler.class
 Server\SessionManager$PendingClient.class
+com\mycompany\swgserver\SWGSERVER.class
+Server\SessionManager$LoginDecision.class
+Client\RegisterHandler.class
+Client\RuleHandler.class
 Server\ServerMain.class
 Server\ServerView.class
-com\mycompany\swgserver\SWGSERVER.class
-Server\RegisterHandler.class
-Server\SessionManager$LoginDecision.class
