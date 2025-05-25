@@ -10,29 +10,50 @@ package Client;
  */
 
 import java.io.*;
+import java.net.Socket;
 
 public class RegisterHandler {
-    public static void processRegister(String msg, BufferedWriter out) throws IOException {
-        String[] parts = msg.substring(9).split(",");
-        if (parts.length == 3) {
-            String newId = parts[0].trim();
-            String newPw = parts[1].trim();
-            String role = parts[2].trim().toLowerCase();
+    private final Socket socket;
+    private final BufferedReader in;
+    private final BufferedWriter out;
 
-            String filename = role.equals("admin") ?
-                    "src/main/resources/ADMIN_LOGIN.txt" :
-                    "src/main/resources/USER_LOGIN.txt";
+    public RegisterHandler(Socket socket, BufferedReader in, BufferedWriter out) {
+        this.socket = socket;
+        this.in = in;
+        this.out = out;
+    }
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
-                writer.write(newId + "," + newPw);
-                writer.newLine();
-            }
+    public void handle(String message) throws IOException {
+        if (!message.startsWith("REGISTER:")) return;
 
-            out.write("REGISTER_SUCCESS");
-        } else {
-            out.write("REGISTER_FAIL");
+        String[] parts = message.substring("REGISTER:".length()).split(",");
+        if (parts.length != 6) {
+            out.write("REGISTER_FAIL:잘못된 형식\n");
+            out.flush();
+            return;
         }
-        out.newLine();
+
+        String userId = parts[0];
+        String password = parts[1];
+        String name = parts[2];
+        String studentId = parts[3];
+        String department = parts[4];
+        String role = parts[5];
+
+        // 로그인 파일 저장
+        String loginFile = role.equals("admin") ? "src/main/resources/ADMIN_LOGIN.txt" : "src/main/resources/USER_LOGIN.txt";
+        try (BufferedWriter loginWriter = new BufferedWriter(new FileWriter(loginFile, true))) {
+            loginWriter.write(userId + "," + password);
+            loginWriter.newLine();
+        }
+
+        // 전체 사용자 정보 저장
+        try (BufferedWriter infoWriter = new BufferedWriter(new FileWriter("src/main/resources/USER_INFO.txt", true))) {
+            infoWriter.write(studentId + "," + password + "," + name + "," + department + "," + role);
+            infoWriter.newLine();
+        }
+
+        out.write("REGISTER_SUCCESS\n");
         out.flush();
     }
 }

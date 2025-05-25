@@ -10,6 +10,7 @@ package Server;
  */
 
 import Client.RegisterHandler;
+import Client.UserInfoHandler;
 import java.io.*;
 import java.net.Socket;
 
@@ -45,11 +46,21 @@ public class ClientHandler extends Thread {
                 String msg = in.readLine();
                 if (msg == null) break;
 
+                // ✅ 회원가입 처리
                 if (msg.startsWith("REGISTER:")) {
-                    RegisterHandler.processRegister(msg, out);
+                    RegisterHandler registerHandler = new RegisterHandler(socket, in, out);
+                    registerHandler.handle(msg);
                     continue;
                 }
 
+                // ✅ 사용자 정보 요청 처리
+                if (msg.startsWith("INFO_REQUEST:")) {
+                    UserInfoHandler infoHandler = new UserInfoHandler(socket, out);
+                    infoHandler.handle(msg);
+                    continue;
+                }
+
+                // ✅ 로그인 처리
                 if (msg.startsWith("LOGIN:")) {
                     String[] parts = msg.substring(6).split(",");
                     if (parts.length < 3) {
@@ -98,8 +109,10 @@ public class ClientHandler extends Thread {
                         out.newLine();
                         out.flush();
                     }
+                    continue;
                 }
 
+                // ✅ 로그아웃 처리
                 if (msg.startsWith("LOGOUT:")) {
                     String logoutId = msg.substring(7).trim();
                     sessionManager.logout(logoutId);
