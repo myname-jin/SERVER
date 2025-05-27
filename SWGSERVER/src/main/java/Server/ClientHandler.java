@@ -12,8 +12,8 @@ package Server;
 import java.io.*;
 import java.net.Socket;
 
-import Client.RegisterHandler;     // REGISTER 로직 담당
-import Client.UserInfoHandler;     // INFO_REQUEST 처리
+import Client.RegisterHandler;     // 서버 쪽 핸들러
+import Client.UserInfoHandler;     // 서버 쪽 핸들러
 
 public class ClientHandler extends Thread {
     private final Socket socket;
@@ -21,7 +21,6 @@ public class ClientHandler extends Thread {
     private BufferedReader in;
     private BufferedWriter out;
     private String userId = null;
-    private boolean isWaiting = false;
 
     public ClientHandler(Socket socket, SessionManager sessionManager) {
         this.socket = socket;
@@ -37,15 +36,8 @@ public class ClientHandler extends Thread {
     @Override
     public void run() {
         try {
-            while (true) {
-                if (isWaiting) {
-                    Thread.sleep(500);
-                    continue;
-                }
-
-                String msg = in.readLine();
-                if (msg == null) break;
-
+            String msg;
+            while ((msg = in.readLine()) != null) {
                 // ─── 회원가입 처리 ───────────────────────────────────
                 if (msg.startsWith("REGISTER:")) {
                     RegisterHandler regHandler = new RegisterHandler(out);
@@ -62,6 +54,7 @@ public class ClientHandler extends Thread {
 
                 // ─── 로그인 처리 ─────────────────────────────────────
                 if (msg.startsWith("LOGIN:")) {
+                    System.out.println("[서버] 로그인 요청: " + msg);
                     String[] parts = msg.substring("LOGIN:".length()).split(",");
                     if (parts.length < 3) {
                         out.write("FAIL");
@@ -74,10 +67,13 @@ public class ClientHandler extends Thread {
                     String password = parts[1].trim();
                     String role     = parts[2].trim();
 
-                    if (!validateLogin(userId, password, role)) {
+                    boolean valid = validateLogin(userId, password, role);
+                    System.out.println("[서버] 로그인 검증 결과: " + valid);
+                    if (!valid) {
                         out.write("FAIL");
                         out.newLine();
                         out.flush();
+                        System.out.println("[서버] 응답: FAIL");
                         continue;
                     }
 
@@ -85,7 +81,7 @@ public class ClientHandler extends Thread {
                         out.write("LOGIN_SUCCESS");
                         out.newLine();
                         out.flush();
-                        System.out.println("관리자 로그인: " + userId);
+                        System.out.println("[서버] 응답: LOGIN_SUCCESS (admin)");
                         continue;
                     }
 
@@ -98,17 +94,17 @@ public class ClientHandler extends Thread {
                         out.write("LOGIN_SUCCESS");
                         out.newLine();
                         out.flush();
-                        System.out.println("사용자 로그인: " + userId);
+                        System.out.println("[서버] 응답: LOGIN_SUCCESS (user)");
                     } else if (result == SessionManager.LoginDecision.WAIT) {
                         out.write("WAIT");
                         out.newLine();
                         out.flush();
-                        System.out.println("대기 상태 진입: " + userId);
-                        isWaiting = true;
+                        System.out.println("[서버] 응답: WAIT (queued)");
                     } else {
                         out.write("FAIL");
                         out.newLine();
                         out.flush();
+                        System.out.println("[서버] 응답: FAIL");
                     }
                     continue;
                 }
@@ -117,21 +113,21 @@ public class ClientHandler extends Thread {
                 if (msg.startsWith("LOGOUT:")) {
                     String logoutId = msg.substring("LOGOUT:".length()).trim();
                     sessionManager.logout(logoutId);
-                    System.out.println("로그아웃 처리됨: " + logoutId);
+                    System.out.println("[서버] 로그아웃 처리: " + logoutId);
                     break;
                 }
             }
-        } catch (IOException | InterruptedException e) {
-            System.out.println("오류: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("[서버] 오류: " + e.getMessage());
         } finally {
             try {
                 if (userId != null) {
                     sessionManager.logout(userId);
-                    System.out.println("세션 정리됨: " + userId);
+                    System.out.println("[서버] 세션 정리: " + userId);
                 }
                 socket.close();
             } catch (IOException e) {
-                System.out.println("종료 오류: " + e.getMessage());
+                System.out.println("[서버] 종료 오류: " + e.getMessage());
             }
         }
     }
@@ -151,7 +147,7 @@ public class ClientHandler extends Thread {
                 }
             }
         } catch (IOException e) {
-            System.out.println("로그인 검증 오류: " + e.getMessage());
+            System.out.println("[서버] 로그인 검증 오류: " + e.getMessage());
         }
         return false;
     }
