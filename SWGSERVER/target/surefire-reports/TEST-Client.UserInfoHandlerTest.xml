@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="Client.RegisterHandlerTest" time="0.175" tests="3" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="Client.UserInfoHandlerTest" time="0.108" tests="4" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,9 +15,9 @@
     <property name="user.country" value="KR"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="C:\zulu21.36.17-ca-fx-jdk21.0.4-win_x64\zulu21.36.17-ca-fx-jdk21.0.4-win_x64\bin"/>
-    <property name="sun.java.command" value="C:\Users\adsd3\AppData\Local\Temp\surefire3045423374102119414\surefirebooter-20250527095828213_3.jar C:\Users\adsd3\AppData\Local\Temp\surefire3045423374102119414 2025-05-27T09-58-28_043-jvmRun1 surefire-20250527095828213_1tmp surefire_0-20250527095828213_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\adsd3\AppData\Local\Temp\surefire14570804206543401372\surefirebooter-20250527100601011_3.jar C:\Users\adsd3\AppData\Local\Temp\surefire14570804206543401372 2025-05-27T10-06-00_863-jvmRun1 surefire-20250527100601011_1tmp surefire_0-20250527100601011_2tmp"/>
     <property name="jdk.debug" value="release"/>
-    <property name="test" value="Client.RegisterHandlerTest"/>
+    <property name="test" value="Client.UserInfoHandlerTest"/>
     <property name="surefire.test.class.path" value="C:\SERVER\SWGSERVER\target\test-classes;C:\SERVER\SWGSERVER\target\classes;C:\Users\adsd3\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\adsd3\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\adsd3\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\adsd3\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\adsd3\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\adsd3\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\adsd3\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="user.home" value="C:\Users\adsd3"/>
@@ -31,7 +31,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\adsd3\AppData\Local\Temp\surefire3045423374102119414\surefirebooter-20250527095828213_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\adsd3\AppData\Local\Temp\surefire14570804206543401372\surefirebooter-20250527100601011_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.4+7-LTS"/>
@@ -61,22 +61,8 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testInvalidFormat" classname="Client.RegisterHandlerTest" time="0.061">
-    <system-out><![CDATA[Working dir: C:\SERVER\SWGSERVER\.
-🔄 회원가입 요청: BAD_FORMAT
-]]></system-out>
-  </testcase>
-  <testcase name="testAdminRegistration" classname="Client.RegisterHandlerTest" time="0.044">
-    <system-out><![CDATA[Working dir: C:\SERVER\SWGSERVER\.
-🔄 회원가입 요청: REGISTER:admin:john:pass
-→ 쓰는 파일: C:\SERVER\SWGSERVER\src\main\resources\ADMIN_LOGIN.txt
-]]></system-out>
-  </testcase>
-  <testcase name="testUserRegistration" classname="Client.RegisterHandlerTest" time="0.026">
-    <system-out><![CDATA[Working dir: C:\SERVER\SWGSERVER\.
-🔄 회원가입 요청: REGISTER:학생:jane:pwd:Jane Doe:CS
-→ 쓰는 파일: C:\SERVER\SWGSERVER\src\main\resources\USER_LOGIN.txt
-→ 쓰는 파일: C:\SERVER\SWGSERVER\src\main\resources\USER_INFO.txt
-]]></system-out>
-  </testcase>
+  <testcase name="whenFileMissing_thenReturnsNotFound" classname="Client.UserInfoHandlerTest" time="0.046"/>
+  <testcase name="whenUserExists_thenReturnsInfoResponse" classname="Client.UserInfoHandlerTest" time="0.008"/>
+  <testcase name="whenUserNotFound_thenReturnsNotFound" classname="Client.UserInfoHandlerTest" time="0.004"/>
+  <testcase name="whenBadMessage_thenNothingSent" classname="Client.UserInfoHandlerTest" time="0.009"/>
 </testsuite>

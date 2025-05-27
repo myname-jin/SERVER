@@ -1,3 +1,4 @@
+Client\UserInfoHandlerTest.class
 Server\ServerMainTest.class
 Server\ClientHandlerTest.class
 Server\LoginProcessorTest.class

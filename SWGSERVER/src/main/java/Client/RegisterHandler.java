@@ -68,7 +68,6 @@ public class RegisterHandler {
 
     /** 한 파일에 한 줄을 append 모드로 쓰고 성공 여부 반환 */
     private boolean writeLine(File file, String line) {
-        System.out.println("→ 쓰는 파일: " + file.getAbsolutePath());
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
             bw.write(line);
             bw.newLine();
