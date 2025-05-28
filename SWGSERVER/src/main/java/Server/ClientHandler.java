@@ -137,7 +137,7 @@ public class ClientHandler extends Thread {
                 }
             }
         } catch (IOException e) {
-            System.out.println("[서버] 오류: " + e.getMessage());
+            System.out.println("[서버] 강제종료");
         } finally {
             try {
                 if (userId != null) {
@@ -146,7 +146,7 @@ public class ClientHandler extends Thread {
                 }
                 socket.close();
             } catch (IOException e) {
-                System.out.println("[서버] 종료 오류: " + e.getMessage());
+                System.out.println("[서버] 종료 ");
             }
         }
     }
