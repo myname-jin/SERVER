@@ -29,7 +29,7 @@ public class RegisterHandler {
     public void handle(String msg) {
         // 디버깅 로그: 작업 디렉토리 및 원본 메시지
         System.out.println("Working dir: " + new File(".").getAbsolutePath());
-        System.out.println("🔄 회원가입 요청: " + msg);
+        System.out.println("? 회원가입 요청: " + msg);
 
         // 1) 콜론으로 파싱
         String[] parts = msg.split(":", 6);
