@@ -1,5 +1,5 @@
 배고파요|시스템|true
 sadsas|시스템|true
 ㅁㄴㅇ|긴급|false
-ㅁㄴㅇ|일반|false
-ㅊㅊ|일반|false
+ㅁㄴㅇ|일반|true
+축구|일반|false
